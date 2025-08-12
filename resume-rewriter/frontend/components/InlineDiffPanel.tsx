@@ -4,12 +4,12 @@ import DiffRow from "./DiffRow";
 import { buildPatchFromRewrites, applyPatchLocal } from "../utils/patch";
 import { JsonPatchOp, Rewrite } from "../types/jsonPatch";
 
-type Props = {
+type Props = Readonly<{
   resumeJson: any;
   rewrites: Rewrite[];
   pendingPatch: JsonPatchOp[];
   onUpdatePatch: (ops: JsonPatchOp[]) => void;
-};
+}>;
 
 export default function InlineDiffPanel({ resumeJson, rewrites, pendingPatch, onUpdatePatch }: Props) {
   // seed default ops from all rewrites (used by Accept All)
@@ -54,19 +54,20 @@ export default function InlineDiffPanel({ resumeJson, rewrites, pendingPatch, on
   });
 
   return (
-    <section style={{marginTop: 18}}>
-      <div style={{display:"flex", alignItems:"center", gap:10, marginBottom: 10}}>
-        <h3 style={{fontWeight:700, margin:0}}>Experience — inline suggestions</h3>
-        <span style={{fontSize:12, color:"#6b7280"}}>({pendingPatch.length} accepted)</span>
-        <div style={{marginLeft:"auto", display:"flex", gap:8}}>
-          <button onClick={acceptAll} style={btnPrimary}>Accept all</button>
-          <button onClick={resetAll} style={btn}>Reset</button>
+    <section className="inline-diff">
+      <div className="inline-diff__header">
+        <h3 className="section-title">Experience — inline suggestions</h3>
+        <span className="muted">({pendingPatch.length} accepted)</span>
+        <div className="spacer" />
+        <div className="row gap">
+          <button onClick={acceptAll} className="btn btn-primary">Accept all</button>
+          <button onClick={resetAll} className="btn">Reset</button>
         </div>
       </div>
 
-      {rewrites.length === 0 && <div style={{color:"#6b7280"}}>No suggestions available. Run Compare first.</div>}
+      {rewrites.length === 0 && <div className="muted">No suggestions available. Run Compare first.</div>}
 
-      {visible.length === 0 && <div style={{color:"#6b7280"}}>All suggestions handled.</div>}
+      {visible.length === 0 && <div className="muted">All suggestions handled.</div>}
       {visible.map((m) => {
         const path = `/work/${(m as any).workIdx ?? 0}/highlights/${m.idx}`;
         const accepted = acceptedLookup.has(path);
@@ -83,23 +84,21 @@ export default function InlineDiffPanel({ resumeJson, rewrites, pendingPatch, on
         );
       })}
 
-      <details style={{marginTop:12}}>
+      <details className="details">
         <summary>Preview (first job’s highlights after accepted changes)</summary>
-        <pre style={pre}>
+        <pre className="pre">
 {JSON.stringify(preview?.work?.[0]?.highlights ?? [], null, 2)}
         </pre>
       </details>
 
-      <details style={{marginTop:12}}>
+      <details className="details">
         <summary>Pending JSON Patch</summary>
-        <pre style={pre}>{JSON.stringify(pendingPatch, null, 2)}</pre>
+        <pre className="pre">{JSON.stringify(pendingPatch, null, 2)}</pre>
       </details>
     </section>
   );
 }
 
-const btn: React.CSSProperties = { padding:"8px 12px", border:"1px solid #222", borderRadius:8, background:"white" };
-const btnPrimary: React.CSSProperties = { padding:"8px 12px", border:"1px solid #2563eb", borderRadius:8, background:"#2563eb", color:"white" };
-const pre: React.CSSProperties = { background:"#f6f6f6", padding:12, borderRadius:8, overflow:"auto" };
+// styles in globals.css
 
 

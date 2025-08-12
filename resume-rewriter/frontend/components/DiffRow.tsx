@@ -1,41 +1,32 @@
 import React from "react";
 
-type Props = {
+type Props = Readonly<{
   indexHint: number | null;
   before: string;
   after: string;
   accepted: boolean;
   onAccept: () => void;
   onReject: () => void;
-};
+}>;
 
 export default function DiffRow({ indexHint, before, after, accepted, onAccept, onReject }: Props) {
   return (
-    <div style={{
-      border: "1px solid #e5e7eb", borderRadius: 10, padding: 12, marginBottom: 10,
-      background: accepted ? "#eefbea" : "white"
-    }}>
-      <div style={{display: "flex", justifyContent: "space-between", marginBottom: 6}}>
-        <div style={{fontWeight: 600}}>Bullet {indexHint !== null ? `#${indexHint}` : "?"}</div>
-        <div style={{display: "flex", gap: 8}}>
-          <button
-            onClick={onAccept}
-            style={{padding:"6px 10px", border:"1px solid #16a34a", borderRadius: 8, background:"#16a34a", color:"white"}}
-          >Accept</button>
-          <button
-            onClick={onReject}
-            style={{padding:"6px 10px", border:"1px solid #9ca3af", borderRadius: 8, background:"white"}}
-          >Reject</button>
+    <div className={`diff-row ${accepted ? "accepted" : ""}`}>
+      <div className="diff-row__top">
+        <div className="chip">Bullet {indexHint !== null ? `#${indexHint}` : "?"}</div>
+        <div className="row gap">
+          <button onClick={onAccept} className="btn btn-success">Accept</button>
+          <button onClick={onReject} className="btn">Reject</button>
         </div>
       </div>
-      <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap: 12}}>
+      <div className="diff-grid">
         <div>
-          <div style={{fontSize:12, color:"#6b7280"}}>Original</div>
-          <div style={{whiteSpace:"pre-wrap"}}>{before}</div>
+          <div className="muted tiny">Original</div>
+          <div className="text-block">{before}</div>
         </div>
         <div>
-          <div style={{fontSize:12, color:"#6b7280"}}>Suggested</div>
-          <div style={{whiteSpace:"pre-wrap"}}>{after}</div>
+          <div className="muted tiny">Suggested</div>
+          <div className="text-block">{after}</div>
         </div>
       </div>
     </div>
