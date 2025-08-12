@@ -1,0 +1,25 @@
+{
+  "name": "rr-ui",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start -p 3000",
+    "lint": "echo \"(lint setup later)\""
+  },
+  "dependencies": {
+    "next": "14.2.5",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "@monaco-editor/react": "4.6.0",
+    "monaco-editor": "0.52.2"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "@types/node": "24.2.1",
+    "@types/react": "19.1.10",
+    "typescript": "5.9.2"
+  }
+}

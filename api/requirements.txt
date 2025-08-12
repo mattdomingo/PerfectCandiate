@@ -1,0 +1,23 @@
+fastapi[all]==0.115.0
+boto3==1.34.0
+psycopg[binary]==3.1.19
+SQLAlchemy==2.0.29
+PyMuPDF==1.24.5
+pytesseract==0.3.10
+python-multipart==0.0.9
+uvicorn==0.23.2
+Pillow==10.4.0
+spacy==3.7.5
+en-core-web-sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.7.1/en_core_web_sm-3.7.1-py3-none-any.whl
+
+
+
+trafilatura==1.9.0
+sentence-transformers==2.6.1
+
+pytest==8.2.2
+httpx==0.27.0
+reportlab==4.2.2
+Jinja2==3.1.4
+WeasyPrint==61.2
+python-docx==1.1.2
