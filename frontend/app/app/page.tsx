@@ -47,18 +47,22 @@ export default function AppPage() {
       }).then(r=>r.json());
       setResumeId(init.resume_id); setS3key(init.s3_key);
       await fetch(init.put_url, { method: "PUT", headers: {"Content-Type":"application/pdf"}, body: file });
-      toast("success", "Uploaded. Now click Extract.");
+      toast("success", "Uploaded. Extracting…");
+      // Automatically extract right after upload
+      await extract(init.resume_id, init.s3_key);
     } finally { setBusy(false); }
   }
 
-  async function extract() {
-    if (!s3key || !resumeId) return toast("info", "Upload first");
+  async function extract(resumeIdArg?: string, s3keyArg?: string) {
+    const _rid = resumeIdArg || resumeId;
+    const _s3k = s3keyArg || s3key;
+    if (!_s3k || !_rid) return toast("info", "Upload first");
     setBusy(true);
     try {
       const r = await fetch(`${API}/extract`, {
         method: "POST",
         headers: {"Content-Type":"application/json"},
-        body: JSON.stringify({ resume_id: resumeId, s3_key: s3key })
+        body: JSON.stringify({ resume_id: _rid, s3_key: _s3k })
       }).then(r=>r.json());
       setJsonResume(r.json_resume); setRawText(r.raw_text);
       setPendingPatch([]);
@@ -75,17 +79,20 @@ export default function AppPage() {
         body: JSON.stringify({ url: jobUrl || null, pasted: jobPaste || null })
       }).then(r=>r.json());
       setJobId(r.job_id);
+      // Automatically compare after ingest to generate suggestions
+      await compare(r.job_id);
     } finally { setBusy(false); }
   }
 
-  async function compare() {
-    if (!resumeId || !jobId) return toast("info", "Extract resume and ingest job first");
+  async function compare(jobIdArg?: string) {
+    const _jid = jobIdArg || jobId;
+    if (!resumeId || !_jid) return toast("info", "Extract resume and ingest job first");
     setBusy(true);
     try {
       const r = await fetch(`${API}/compare`, {
         method: "POST",
         headers: {"Content-Type":"application/json"},
-        body: JSON.stringify({ resume_id: resumeId, job_id: jobId })
+        body: JSON.stringify({ resume_id: resumeId, job_id: _jid })
       }).then(r=>r.json());
       setCoverage(r.coverage || []);
       setOriginalText(r.original_text || "");
@@ -122,6 +129,8 @@ export default function AppPage() {
       setBusy(false);
     }
   }
+
+  // Manual save: user clicks Save changes; download remains user-triggered
 
   async function download(fmt: "pdf"|"docx") {
     if (!resumeId) return toast("info", "No resume loaded");
@@ -162,10 +171,10 @@ export default function AppPage() {
         <nav className="actions">
           {jsonResume && (
             <div className="export">
-              <button className="btn" onClick={()=>download("pdf")}>
+              <button className="btn" onClick={()=>download("pdf")} title="Download current resume as PDF">
                 Export PDF
               </button>
-              <button className="btn" onClick={()=>download("docx")}>
+              <button className="btn" onClick={()=>download("docx")} title="Download current resume as DOCX">
                 Export DOCX
               </button>
             </div>
@@ -186,7 +195,7 @@ export default function AppPage() {
             <div className="row gap">
               <input id="file" type="file" accept="application/pdf" className="input-file" />
               <button onClick={startUpload} disabled={busy} className="btn">Upload PDF</button>
-              <button onClick={extract} disabled={busy || !s3key} className="btn btn-primary">Extract</button>
+              <button onClick={()=>extract()} disabled={busy || !s3key} className="btn btn-primary">Extract</button>
             </div>
             {jsonResume && (
               <details className="details">
@@ -234,7 +243,7 @@ export default function AppPage() {
               <div className="step-help">See coverage and accept suggested rewrites</div>
             </div>
             <div className="ml-auto">
-              <button onClick={compare} disabled={busy || !resumeId || !jobId} className="btn">Compare</button>
+              <button onClick={()=>compare()} disabled={busy || !resumeId || !jobId} className="btn">Compare</button>
             </div>
           </div>
           <div className="card">
@@ -293,6 +302,14 @@ export default function AppPage() {
               <div className="save-bar">
                 <div>{pendingPatch.length} change(s) ready</div>
                 <button onClick={saveChanges} disabled={busy || !resumeId} className="btn btn-success">Save changes</button>
+              </div>
+            )}
+
+            {jsonResume && (
+              <div className="row gap" style={{marginTop: 12, flexWrap: "wrap"}}>
+                <div className="section-title" style={{marginBottom: 0}}>Download</div>
+                <button className="btn" onClick={()=>download("pdf")} disabled={busy || !resumeId}>PDF</button>
+                <button className="btn" onClick={()=>download("docx")} disabled={busy || !resumeId}>DOCX</button>
               </div>
             )}
           </div>

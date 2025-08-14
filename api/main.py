@@ -246,7 +246,17 @@ def resume_apply_patch(payload: ApplyPatchIn):
             (vid, payload.resume_id, json.dumps(new_doc))
         )
 
-    resp = {"resume_id": payload.resume_id, "json_resume": new_doc, "version_id": vid}
+    # 4b) write canonical JSON to S3/MinIO for external access/debugging
+    json_key = f"json/{payload.resume_id}.json"
+    s3.put_object(
+        Bucket=S3_BUCKET,
+        Key=json_key,
+        Body=json.dumps(new_doc).encode("utf-8"),
+        ContentType="application/json",
+        CacheControl="no-store"
+    )
+
+    resp = {"resume_id": payload.resume_id, "json_resume": new_doc, "version_id": vid, "s3_json_key": json_key}
 
     # 5) optional immediate re-compare
     if payload.job_id:
