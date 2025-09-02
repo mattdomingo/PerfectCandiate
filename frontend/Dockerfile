@@ -1,11 +1,25 @@
-FROM node:20
+FROM node:18-alpine
+
+# Set working directory
 WORKDIR /app
-COPY package.json package-lock.json ./
-RUN npm ci
+
+# Copy package files
+COPY package*.json ./
+
+# Install dependencies
+RUN npm install
+
+# Copy source code (excluding node_modules if it exists locally)
 COPY . .
-# Ensure node_modules remains in container for dev even with bind mount
-VOLUME ["/app/node_modules"]
+
+# Reinstall dependencies to ensure they're properly linked
+RUN npm install
+
+# Create next.js config if it doesn't exist
+RUN touch next.config.js
+
+# Expose port
 EXPOSE 3000
-CMD ["npm","run","dev","--","-p","3000"]
 
-
+# Start the application
+CMD ["npm", "run", "dev"]

@@ -1,62 +1,130 @@
-"use client";
-import Link from "next/link";
-import { useState } from "react";
+'use client'
+
+import { useState } from 'react'
+import Link from 'next/link'
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [message, setMessage] = useState<string | null>(null);
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
 
-  function onSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setMessage("Sign-in is not enabled in this preview.");
-    window.setTimeout(() => setMessage(null), 3000);
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    // TODO: Implement login logic
+    console.log('Login attempt:', { email, password })
   }
 
   return (
-    <main className="container">
-      <header className="app-header" style={{marginBottom: 16}}>
-        <div className="brand">
-          <div className="logo" aria-hidden />
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-8">
+        <div>
+          <div className="mx-auto h-12 w-12 bg-primary-600 rounded-full flex items-center justify-center">
+            <span className="text-white font-bold text-xl">PC</span>
+          </div>
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+            Sign in to your account
+          </h2>
+          <p className="mt-2 text-center text-sm text-gray-600">
+            Or{' '}
+            <Link href="/" className="font-medium text-primary-600 hover:text-primary-500">
+              start optimizing your resume
+            </Link>
+          </p>
+        </div>
+        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+          <div className="rounded-md shadow-sm -space-y-px">
+            <div>
+              <label htmlFor="email" className="sr-only">
+                Email address
+              </label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                autoComplete="email"
+                required
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm"
+                placeholder="Email address"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
+            <div>
+              <label htmlFor="password" className="sr-only">
+                Password
+              </label>
+              <input
+                id="password"
+                name="password"
+                type="password"
+                autoComplete="current-password"
+                required
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <input
+                id="remember-me"
+                name="remember-me"
+                type="checkbox"
+                className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
+              />
+              <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
+                Remember me
+              </label>
+            </div>
+
+            <div className="text-sm">
+              <a href="#" className="font-medium text-primary-600 hover:text-primary-500">
+                Forgot your password?
+              </a>
+            </div>
+          </div>
+
           <div>
-            <div className="title">Perfect Candidate</div>
-            <div className="subtitle">Login</div>
+            <button
+              type="submit"
+              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+            >
+              Sign in
+            </button>
           </div>
-        </div>
-        <nav className="actions">
-          <Link href="/app" className="btn">Use app</Link>
-        </nav>
-      </header>
 
-      <div className="card" style={{maxWidth: 440, margin: "0 auto"}}>
-        <h2 className="section-title" style={{marginBottom: 8}}>Welcome back</h2>
-        <p className="muted" style={{marginTop: 0, marginBottom: 14}}>Sign in to continue</p>
-        <form onSubmit={onSubmit} className="" aria-describedby="login-help">
-          <div style={{display: "grid", gap: 10}}>
-            <label>
-              <div className="tiny muted" style={{marginBottom: 4}}>Email</div>
-              <input className="input" type="email" required value={email} onChange={e=>setEmail(e.target.value)} placeholder="you@example.com" />
-            </label>
-            <label>
-              <div className="tiny muted" style={{marginBottom: 4}}>Password</div>
-              <input className="input" type="password" required value={password} onChange={e=>setPassword(e.target.value)} placeholder="••••••••" />
-            </label>
-            <button type="submit" className="btn btn-primary">Sign in</button>
-            <button type="button" className="btn" aria-disabled="true" title="Not enabled">Continue with Google</button>
+          <div className="mt-6">
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-300" />
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-2 bg-gray-50 text-gray-500">Or continue with</span>
+              </div>
+            </div>
+
+            <div className="mt-6 grid grid-cols-2 gap-3">
+              <button
+                type="button"
+                disabled
+                className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 cursor-not-allowed"
+              >
+                <span>Google</span>
+              </button>
+
+              <button
+                type="button"
+                disabled
+                className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 cursor-not-allowed"
+              >
+                <span>GitHub</span>
+              </button>
+            </div>
           </div>
-          <div id="login-help" className="tiny muted" style={{marginTop: 10}}>No account needed for the demo. You can go straight to the app.</div>
         </form>
-        <div style={{marginTop: 12}}>
-          <span className="muted tiny">New here?</span>{" "}
-          <Link href="/app" className="btn" style={{padding: "6px 10px"}}>Get started</Link>
-        </div>
       </div>
-
-      {message && (
-        <output className="toast info" aria-live="polite">{message}</output>
-      )}
-    </main>
-  );
+    </div>
+  )
 }
-
-
